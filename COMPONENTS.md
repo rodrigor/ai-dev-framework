@@ -1,59 +1,59 @@
-# Componentes reutilizáveis
+# Reusable components
 
-Catálogo de tudo que já existe e pode ser reutilizado: helpers, services,
-macros, middleware, fixtures, JS compartilhado, dependências de framework.
+Catalog of everything that already exists and can be reused: helpers,
+services, macros, middleware, fixtures, shared JS, framework dependencies.
 
-**Antes de implementar qualquer componente novo, consulte este arquivo.**
-Se algo similar existe, reuse ou generalize.
+**Before implementing any new component, consult this file.** If
+something similar exists, reuse or generalize it.
 
-> Esquema vazio. Preencha conforme o projeto cresce. Cada entrada deve ter:
-> - **Caminho** do arquivo
-> - **Assinatura** (nome + parâmetros principais)
-> - **Propósito** em uma linha
-> - **Quando usar** (e quando não usar)
+> Empty skeleton. Fill in as the project grows. Each entry should have:
+> - **Path** of the file
+> - **Signature** (name + main parameters)
+> - **Purpose** in one line
+> - **When to use** (and when not to)
 
 ---
 
-## Helpers / utilitários
+## Helpers / utilities
 
-_Vazio. Adicione conforme criar._
+_Empty. Add as you create them._
 
-<!-- Exemplo:
-### `format_currency(value, locale="pt-BR")`
-- **Caminho:** `src/utils/formatting.py`
-- **Propósito:** Formata valor monetário com símbolo da moeda do locale.
-- **Quando usar:** Toda exibição de valor monetário na UI.
-- **Quando não usar:** Cálculos internos (use Decimal puro).
+<!-- Example:
+### `format_currency(value, locale="en-US")`
+- **Path:** `src/utils/formatting.py`
+- **Purpose:** Formats a monetary value with the locale's currency symbol.
+- **When to use:** Any currency display in the UI.
+- **When not to use:** Internal math (use Decimal directly).
 -->
 
-## Services / camada de domínio
+## Services / domain layer
 
-_Vazio._
+_Empty._
 
-## Middleware / dependências de framework
+## Middleware / framework dependencies
 
-_Vazio._
+_Empty._
 
-## Componentes de UI / macros / partials
+## UI components / macros / partials
 
-_Vazio._
+_Empty._
 
-## JavaScript compartilhado
+## Shared JavaScript
 
-_Vazio._
+_Empty._
 
-## Fixtures de teste
+## Test fixtures
 
-_Vazio._
+_Empty._
 
-## Padrões transversais
+## Cross-cutting patterns
 
-_Vazio._
+_Empty._
 
-<!-- Exemplo:
-### Modal de confirmação
-- **Como usar:** atributo `data-confirm="mensagem"` em forms destrutivos,
-  ou `window.Modal.confirm(opts)` em JS.
-- **NUNCA usar:** `alert()` ou `confirm()` nativos.
-- **Caminho:** `src/static/js/modal.js`
+<!-- Example:
+### Confirmation modal
+- **How to use:** `data-confirm="message"` attribute on destructive forms,
+  or `window.Modal.confirm(opts)` in JS.
+- **NEVER use:** native `alert()` or `confirm()`.
+- **Path:** `src/static/js/modal.js`
 -->

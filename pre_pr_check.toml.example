@@ -1,34 +1,34 @@
-# Configuração do scripts/pre_pr_check.py.
-# Copie para `pre_pr_check.toml` na raiz do projeto e ajuste.
+# Configuration for scripts/pre_pr_check.py.
+# Copy to `pre_pr_check.toml` at the project root and adjust.
 
-# Branch base para comparar (geralmente main ou develop)
+# Base branch for comparison (usually main or develop)
 base = "main"
 
 [release_notes]
-# Arquivos onde release notes vivem
+# Files where release notes live
 paths = ["CHANGELOG.md"]
-# Se algum arquivo nestes globs muda, exige update em release notes
+# If any file in these globs changes, an update to release notes is required
 code_globs = ["src/**", "app/**", "lib/**"]
 
 [components]
-# Se um arquivo novo é adicionado nestes globs, exige update em COMPONENTS.md
+# If a new file is added under these globs, COMPONENTS.md must be updated
 helper_globs = ["**/utils/**", "**/helpers/**", "**/services/**", "**/lib/**"]
 
 [feature_flag]
-# Globs de rotas/controllers
+# Globs for routes/controllers
 route_globs = ["**/routers/**", "**/routes/**", "**/controllers/**"]
-# Marcador no código que indica uso de feature flag
+# Code marker that indicates feature-flag usage
 marker = "is_enabled"
 
-# Sincronizações custom — múltiplas regras possíveis
-# Quando QUALQUER arquivo de `when_any_changes` muda, exige que TODOS de
-# `require_all_change` também mudem na mesma branch.
+# Custom synchronizations — multiple rules allowed.
+# When ANY file in `when_any_changes` changes, ALL files in
+# `require_all_change` must also change in the same branch.
 
-# Exemplo (do projeto okrs4all):
+# Example (from a multi-form scenario):
 # [[sync]]
-# name = "okr-draft-payload"
+# name = "form-payload-sync"
 # when_any_changes = [
-#   "app/templates/okr_form.html",
+#   "app/templates/some_form.html",
 # ]
 # require_all_change = [
 #   "app/models.py",

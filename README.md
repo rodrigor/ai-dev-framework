@@ -1,45 +1,66 @@
 # ai-dev-framework
 
-Arcabouço para desenvolvimento guiado por IA: documentos, controles e
-automações reutilizáveis em qualquer projeto, agnósticos a stack.
+A scaffolding for AI-guided development: reusable documents, controls,
+and automations that work in any project, agnostic to the technology stack.
 
-A camada perene (princípios, processos, segurança) entra igual em todo
-projeto. A camada de **ferramentas** (SAST, análise de deps, cobertura,
-complexidade, modularidade) é decidida no `init` baseado na stack detectada.
+The **persistent layer** (principles, processes, security policies) ships
+identically into every project. The **tooling layer** (SAST, dependency
+analysis, coverage, complexity, modularity) is decided at `init` time
+based on the detected stack.
 
-## O que tem aqui
+## What's here
 
-- `CLAUDE.md` — instruções carregadas em toda sessão de IA
-- `QUALITY.md` — esqueleto dos controles automáticos (preenchido no init)
-- `SECURITY.md` — políticas perenes de segurança
-- `PROCESS.md` — workflows (bug-fix, feature, release notes, pré-PR)
-- `COMPONENTS.md` — catálogo de componentes reutilizáveis (vazio inicialmente)
-- `GLOSSARY.md` — terminologia do domínio (preenchido pelo projeto)
+- `CLAUDE.md` — instructions loaded into every AI session
+- `QUALITY.md` — skeleton for automated controls (filled by init-project)
+- `SECURITY.md` — perennial security policies
+- `PROCESS.md` — workflows (bug fix, feature, release notes, pre-PR)
+- `INFRASTRUCTURE.md` — catalog of infra capabilities the framework configures
+- `COMPONENTS.md` — reusable component catalog (empty initially)
+- `GLOSSARY.md` — domain terminology (filled by the project)
+- `project.config.toml.example` — declarative project configuration
 - `docs/adr/` — Architecture Decision Records
-- `memory-templates/` — formatos de memória mantidos pela IA
-- `.claude/` — hooks, subagentes, slash commands, skills (inclui `init-project`)
-- `scripts/pre_pr_check.py` — checklist pré-PR parametrizável
+- `memory-templates/` — formats for AI persistent memories
+- `.claude/` — hooks, subagents, slash commands, skills (incl. `init-project`)
+- `scripts/pre_pr_check.py` — parametrizable pre-PR checklist
 
-## Uso
+## Usage
 
-### Como template
+### As a template
 
-1. Use este repo como **GitHub Template** ou clone e remova `.git`.
-2. Abra o projeto no Claude Code.
-3. Rode `/init-project` — a skill detecta a stack e propõe a tabela de
-   ferramentas (SAST, deps, cobertura, complexidade, modularidade, segredos).
-4. Confirme as escolhas. O init gera `QUALITY.md` preenchido,
-   `.github/workflows/quality.yml`, `.pre-commit-config.yaml` e configs
-   das ferramentas.
+1. Use this repo as a **GitHub Template** or clone and remove `.git`.
+2. Open the project in Claude Code.
+3. Run `/init-project` — the skill detects the stack, asks about
+   infrastructure choices (auth, multi-tenancy, logging, feature flags,
+   AI integration, admin areas, etc.), proposes the tooling table
+   (SAST, deps, coverage, complexity, modularity, secrets), and
+   confirms gates with you.
+4. The init generates a populated `QUALITY.md`, `INFRASTRUCTURE.md`,
+   `.github/workflows/quality.yml`, `.pre-commit-config.yaml`, and
+   tool configs.
 
-### Filosofia
+### Why English
 
-- **Documentação perene vira código quando possível.** Regras que dependem
-  de o agente "lembrar" são frágeis; hooks que o harness executa são
-  determinísticos.
-- **Camada perene não muda por stack.** Princípios UX, política de segredos,
-  workflow de bug-fix, soft-delete patterns valem em qualquer linguagem.
-- **Ferramentas são plugáveis.** Trivy, Semgrep, gitleaks, SonarQube etc.
-  são escolhas; a função (escanear deps, achar segredo) é perene.
+All framework content is in English on purpose:
 
-Veja `PROCESS.md` para o ciclo completo.
+- **Token efficiency:** English consumes ~20–30% fewer tokens than other
+  languages on common LLM tokenizers. Persistent context multiplied across
+  every session adds up.
+- **Coherence with i18n:** keys, enums, identifiers, and code-facing
+  variables are expected to be in English from day one in every project.
+  Framework docs in another language would contradict that rule.
+
+User-facing content of the project you build can be in any language —
+that's a separate layer (i18n).
+
+### Philosophy
+
+- **Documentation becomes code when possible.** Rules that depend on the
+  agent "remembering" are fragile; hooks executed by the harness are
+  deterministic.
+- **Persistent layer doesn't change per stack.** UX principles, secret
+  handling policy, bug-fix workflow, soft-delete patterns apply across
+  any language.
+- **Tooling is pluggable.** Trivy, Semgrep, gitleaks, SonarQube, etc.
+  are choices; the function (scan deps, find secrets) is perennial.
+
+See `PROCESS.md` for the full development cycle.

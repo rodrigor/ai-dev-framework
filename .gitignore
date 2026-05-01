@@ -1,14 +1,15 @@
-# Local config — não commitar
+# Local config — do not commit
 pre_pr_check.toml
+project.config.toml
 .claude/settings.local.json
 
-# Editores
+# Editors
 .vscode/
 .idea/
 *.swp
 .DS_Store
 
-# Python (caso o framework cresça com utilitários Python)
+# Python (in case the framework grows Python tooling)
 __pycache__/
 *.pyc
 .venv/
@@ -16,5 +17,5 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
-# Node (idem)
+# Node (likewise)
 node_modules/

@@ -1,40 +1,40 @@
 # debt_<slug>.md
 
-> Template para dívidas técnicas catalogadas. Subgrupo de `project_*`.
+> Template for cataloged technical debts. Subset of `project_*`.
 
 ---
 
-# Dívida: <título curto>
+# Debt: <short title>
 
-**Severidade:** <baixa | média | alta>
-**Custo estimado de pagar:** <horas/dias>
-**Custo de não pagar:** <impacto se ignorar>
+**Severity:** <low | medium | high>
+**Estimated cost to pay:** <hours/days>
+**Cost of not paying:** <impact if ignored>
 
-## O problema
+## The problem
 
-<2-4 linhas: o que está errado/incompleto/temporário hoje. Inclua
-caminhos de arquivos relevantes.>
+<2–4 lines: what is wrong/incomplete/temporary today. Include relevant
+file paths.>
 
-## Por que não foi feito ainda
+## Why it hasn't been done
 
-<Razão objetiva: bloqueio externo, custo desproporcional ao benefício,
-trade-off consciente, falta de uso real que justifique.>
+<Objective reason: external blocker, cost-benefit imbalance, conscious
+trade-off, lack of real usage to justify it yet.>
 
-## Solução planejada
+## Planned solution
 
-<Esboço da solução. Não precisa estar detalhado, mas suficiente para
-quem retomar entender a direção.>
+<Outline of the solution. Doesn't need to be detailed, but enough for
+whoever resumes it to understand the direction.>
 
-## Trigger de revisita
+## Revisit trigger
 
-<Condição objetiva que dispara o pagamento da dívida:
-- "Quando empresa atingir 200 usuários" (problema só aparece em escala)
-- "Quando lib X relaxar pin de Y"
-- "Após release 2.0"
-- "Data >= 2026-05-01" (prazo determinístico)
+<Objective condition that triggers paying the debt:
+- "When company reaches 200 users" (only matters at scale)
+- "When lib X relaxes pin on Y"
+- "After release 2.0"
+- "Date >= 2026-05-01" (deterministic deadline)
 >
 
-## Workaround atual
+## Current workaround
 
-<O que está sendo feito hoje para conviver com a dívida. Importante
-para a IA não confundir o workaround com solução definitiva.>
+<What is being done today to live with the debt. Important so the AI
+doesn't confuse the workaround with the definitive solution.>

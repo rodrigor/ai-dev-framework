@@ -1,39 +1,38 @@
-# ADR NNNN — <Título da decisão>
+# ADR NNNN — <Decision title>
 
-- **Status:** proposta | aceita | rejeitada | substituída por ADR-NNNN
-- **Data:** YYYY-MM-DD
-- **Decisores:** <nomes>
+- **Status:** proposed | accepted | rejected | superseded by ADR-NNNN
+- **Date:** YYYY-MM-DD
+- **Deciders:** <names>
 
-## Contexto
+## Context
 
-<O problema. Forças em jogo. Restrições. Por que precisamos decidir agora.>
+<The problem. Forces at play. Constraints. Why we need to decide now.>
 
-## Decisão
+## Decision
 
-<O que foi decidido, em uma frase clara.>
+<What was decided, in one clear sentence.>
 
-## Consequências
+## Consequences
 
-### Positivas
-<Bullets do que melhora.>
+### Positive
+<Bullets of what improves.>
 
-### Negativas
-<Bullets do que piora ou fica restrito.>
+### Negative
+<Bullets of what gets worse or restricted.>
 
-### Neutras
-<Bullets de mudanças que não são bem boas nem ruins, mas precisam ser
-conhecidas.>
+### Neutral
+<Bullets of changes that are neither good nor bad but should be known.>
 
-## Alternativas consideradas
+## Alternatives considered
 
-### Alternativa A — <nome>
-<Por que não foi escolhida.>
+### Alternative A — <name>
+<Why it wasn't chosen.>
 
-### Alternativa B — <nome>
-<Por que não foi escolhida.>
+### Alternative B — <name>
+<Why it wasn't chosen.>
 
-## Referências
+## References
 
-- Links externos
-- Issues / PRs relacionados
-- ADRs predecessores
+- External links
+- Related issues / PRs
+- Predecessor ADRs

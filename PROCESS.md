@@ -1,116 +1,118 @@
-# Processo de desenvolvimento
+# Development process
 
-Workflows perenes do projeto. Como o ciclo "IA implementa, dev guia"
-funciona na prática.
+Perennial workflows. How the "AI implements, dev guides" cycle works
+in practice.
 
-## Ciclo padrão de uma mudança
+## Standard cycle for a change
 
 ```
-1. Entender pedido
-   └─ ler CLAUDE.md, GLOSSARY.md se for domínio novo
-2. Explorar código existente
-   └─ knowledge graph PRIMEIRO; Grep/Read só se graph não cobre
-3. Consultar COMPONENTS.md
-   └─ tem helper/macro/service que resolve? reuse ou generalize
-4. Propor abordagem (curta) — esperar OK do dev em mudanças não-triviais
-5. Implementar
-   ├─ se for bug: TESTE PRIMEIRO (vê falhar) → fix → vê passar
-   ├─ se for feature: feature flag obrigatória
-   └─ se criar componente reutilizável: catalogar em COMPONENTS.md
-6. Atualizar release notes / CHANGELOG (seção "Em desenvolvimento")
-7. Rodar checklist pré-PR (scripts/pre_pr_check.py)
-8. Abrir PR — todos os scanners verdes (HIGH/CRITICAL = bloqueio)
+1. Understand the request
+   └─ read CLAUDE.md, GLOSSARY.md if domain is new
+2. Explore existing code
+   └─ knowledge graph FIRST; Grep/Read only if graph doesn't cover
+3. Consult COMPONENTS.md
+   └─ is there a helper/macro/service that solves this? reuse or generalize
+4. Propose approach (briefly) — wait for dev OK on non-trivial changes
+5. Implement
+   ├─ if a bug: TEST FIRST (see it fail) → fix → see it pass
+   ├─ if a feature: feature flag is mandatory
+   └─ if creating a reusable component: catalog it in COMPONENTS.md
+6. Update release notes / CHANGELOG ("Unreleased" section)
+7. Run pre-PR checklist (scripts/pre_pr_check.py)
+8. Open PR — all scanners green (HIGH/CRITICAL = block)
 ```
 
-## Workflow de bug em produção
+## Production bug workflow
 
-1. Reproduzir o bug.
-2. **Escrever teste** que falha pelo motivo do bug.
-3. Corrigir.
-4. Teste passa.
-5. Entry em release notes (`fixed`).
+1. Reproduce the bug.
+2. **Write a test** that fails for the bug's reason.
+3. Fix.
+4. Test passes.
+5. Entry in release notes (`fixed`).
 6. PR.
 
-Sem teste → bug regride. Não há exceção.
+No test → bug regresses. No exceptions.
 
-## Workflow de feature nova
+## New feature workflow
 
-1. Registrar feature flag no registry.
-2. Proteger rota e UI com `is_enabled(flag)`.
-3. Default da flag pode ser `True`, mas a flag **deve existir** para
-   permitir desligar em incidente sem deploy.
-4. Testes cobrindo flag ON e OFF (a UI/rota se comporta corretamente
-   nos dois estados).
-5. Entry em release notes (`added`).
-6. Se a feature criar componente reutilizável → catalogar.
+1. Register the feature flag in the registry.
+2. Guard route and UI with `is_enabled(flag)`.
+3. Default may be `True`, but the flag **must exist** so it can be
+   disabled in an incident without redeploy.
+4. Tests covering flag ON and OFF (UI/route behaves correctly in both
+   states).
+5. Entry in release notes (`added`).
+6. If the feature creates a reusable component → catalog it.
 
 ## Release notes
 
-A fonte da verdade é `CHANGELOG.md` (ou arquivo equivalente do projeto).
+Source of truth: `CHANGELOG.md` (or the project's equivalent).
 
-- Toda mudança funcional registra entrada na seção **Em desenvolvimento**.
-- Tipos: `added`, `changed`, `fixed`, `removed`, `security`.
-- Se houver distinção usuário-final vs admin/infra: duas trilhas separadas.
-- Ao publicar versão: substitua "Em desenvolvimento" por
-  `{version, date, ...}` e crie nova seção vazia acima.
+- Every functional change records an entry in the **Unreleased** section.
+- Types: `added`, `changed`, `fixed`, `removed`, `security`.
+- If the project distinguishes user-facing vs admin/infra: keep two
+  parallel tracks.
+- When publishing a version: replace "Unreleased" with
+  `{version, date, ...}` and create a new empty section above it.
 
-## Checklist pré-PR
+## Pre-PR checklist
 
-`scripts/pre_pr_check.py` valida automaticamente. Cobertura mínima:
+`scripts/pre_pr_check.py` validates automatically. Minimum coverage:
 
-- [ ] Release notes atualizado (entry em "Em desenvolvimento")
-- [ ] `COMPONENTS.md` atualizado se criou helper/serviço/macro reutilizável
-- [ ] Feature flag registrada se criou rota/feature nova
-- [ ] Sincronizações específicas do projeto (definidas em `CLAUDE.md`)
-- [ ] Build artifacts gerados se aplicável (CSS compilado, schemas gerados)
-- [ ] Testes existentes passam, novos testes cobrem mudança
-- [ ] Scanners SAST/deps/segredos sem HIGH/CRITICAL
+- [ ] Release notes updated (entry in "Unreleased")
+- [ ] `COMPONENTS.md` updated if a reusable helper/service/macro was created
+- [ ] Feature flag registered if a new route/feature was created
+- [ ] Project-specific synchronizations (defined in `CLAUDE.md`)
+- [ ] Build artifacts generated when applicable (compiled CSS,
+      generated schemas)
+- [ ] Existing tests pass; new tests cover the change
+- [ ] SAST/deps/secrets scanners with no HIGH/CRITICAL
 
-## Análise periódica de complexidade
+## Periodic complexity analysis
 
-Após **grandes features** (módulo novo, refactor amplo, fix grande), rode
-os comandos definidos em `QUALITY.md` na seção "Complexidade" e cruze com
-churn (git log dos últimos 3 meses).
+After **large features** (new module, broad refactor, big fix), run the
+commands defined in `QUALITY.md` ("Complexity" section) and cross with
+churn (git log of the last 3 months).
 
-Hotspots (alta complexidade × alto churn) entram na fila de refactor
-prioritário antes da próxima feature no mesmo arquivo.
+Hotspots (high complexity × high churn) go into the priority refactor
+queue before the next feature in the same file.
 
-## Decisões arquiteturais → ADR
+## Architectural decisions → ADR
 
-Decisões que afetam estrutura do sistema (escolha de DB, multi-tenancy,
-estratégia de cache, framework principal, modelo de auth) viram ADR em
-`docs/adr/NNNN-titulo.md`. Use o template `0000-template.md`.
+Decisions affecting system structure (DB choice, multi-tenancy, caching
+strategy, primary framework, auth model) become an ADR in
+`docs/adr/NNNN-title.md`. Use the `0000-template.md`.
 
-Memórias de IA (`project_*`) são voláteis e individuais; ADR é versionado
-e revisável por todo o time.
+AI memories (`project_*`) are volatile and individual; an ADR is
+versioned and reviewable by the whole team.
 
-## Memórias mantidas pela IA
+## AI-maintained memories
 
-A IA mantém memórias persistentes para acelerar sessões futuras. Ver
-`memory-templates/` para os formatos. Tipos:
+The AI keeps persistent memories to accelerate future sessions. See
+`memory-templates/` for the formats. Types:
 
-- **`feedback_*`** — regra de comportamento que o dev corrigiu/validou.
-  Ex: "sempre rebuild Tailwind antes de commitar templates".
-- **`project_*`** — contexto vivo de iniciativas, decisões e dívidas.
-  Ex: "migração para multi-tenancy em fase 2".
-- **`debt_*`** (subgrupo de `project_*`) — dívida técnica catalogada com
-  trigger de revisita.
+- **`feedback_*`** — behavior rule the dev corrected/validated.
+  E.g., "always rebuild Tailwind before committing templates".
+- **`project_*`** — living context of initiatives, decisions, debts.
+  E.g., "phase 2 of multi-tenancy migration".
+- **`debt_*`** (subset of `project_*`) — cataloged technical debt with
+  a revisit trigger.
 
-Memórias **não** substituem ADR nem documentação. São atalhos para a IA
-não repetir erros conhecidos.
+Memories **don't replace** ADRs or documentation. They are shortcuts
+so the AI doesn't repeat known mistakes.
 
-## Revisão periódica
+## Periodic review
 
-- **Memórias:** consolidação trimestral (skill `consolidate-memory`).
-  Memórias `project_*` envelhecem rápido; revisar.
-- **Dívidas técnicas:** revisitar quando o trigger é atingido (passou de
-  X usuários, biblioteca Y subiu pin, etc.).
-- **CLAUDE.md:** revisar a cada release maior — regras que viraram código
-  (hooks, scripts) podem sair daqui.
+- **Memories:** quarterly consolidation (skill `consolidate-memory`).
+  `project_*` memories age fast; revisit them.
+- **Technical debts:** revisit when the trigger fires (passed N users,
+  lib Y bumped pin, etc.).
+- **CLAUDE.md:** review at every major release — rules that became
+  code (hooks, scripts) can leave it.
 
-## Princípio: documentação vira código quando possível
+## Principle: documentation becomes code when possible
 
-Regras que dependem de a IA "lembrar" são frágeis. Quando uma regra
-aparecer 3x em CLAUDE.md ou em memórias `feedback_*`, considere
-transformá-la em hook/script/subagente que o harness executa
-deterministicamente.
+Rules that depend on the AI "remembering" are fragile. When a rule
+appears 3× in CLAUDE.md or in `feedback_*` memories, consider turning
+it into a hook/script/subagent that the harness executes
+deterministically.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "_comment": "Settings perenes do ai-dev-framework. Ajuste no init-project conforme stack.",
+  "_comment": "Perennial settings for ai-dev-framework. Adjust during init-project per stack.",
   "permissions": {
     "allow": [
       "Bash(git status:*)",
@@ -12,7 +12,7 @@
       "Bash(python scripts/pre_pr_check.py:*)"
     ]
   },
-  "_hooks_note": "Ative o hook Stop abaixo para rodar o checklist pré-PR ao final de cada turno da IA. Descomente após validar localmente.",
+  "_hooks_note": "Enable the Stop hook below to run the pre-PR checklist at the end of every AI turn. Uncomment after validating locally.",
   "_hooks_example": {
     "Stop": [
       {

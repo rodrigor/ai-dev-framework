@@ -1,0 +1,125 @@
+# project.config.toml — declarative project configuration.
+#
+# Source of truth for choices made at /init-project time. Drives
+# generation of QUALITY.md, INFRASTRUCTURE.md, CI workflows, tool
+# configs, and scaffolding.
+#
+# Re-running /init-project reconciles against this file (idempotent).
+# Edit + rerun init to regenerate artifacts coherently.
+#
+# This file is git-committed so the team shares the configuration.
+
+# -----------------------------------------------------------------------------
+# Project identity
+# -----------------------------------------------------------------------------
+[project]
+name = "my-project"
+slug = "my-project"
+description = "<one-line description>"
+license = "proprietary"  # or "MIT" / "Apache-2.0" / etc.
+
+# -----------------------------------------------------------------------------
+# Stack
+# -----------------------------------------------------------------------------
+[stack]
+backend = "python"          # python | node | go | rust | java | kotlin | ruby | php
+backend_framework = "fastapi"
+frontend = "none"           # none | react-vite | nextjs | sveltekit | vue
+typescript = false          # only if frontend in [react-vite, nextjs, ...]
+
+# -----------------------------------------------------------------------------
+# Infrastructure (see INFRASTRUCTURE.md for the question/answer catalog)
+# -----------------------------------------------------------------------------
+[infrastructure]
+container = "docker"        # docker | podman | none
+database = "postgres"       # postgres | sqlite | mysql | mongodb
+multi_tenancy = "shared-db" # none | shared-db | db-per-tenant | schema-per-tenant
+admin_areas = ["sysadmin", "tenant-admin"]  # subset of: sysadmin, tenant-admin
+
+[infrastructure.auth]
+methods = ["password", "magic-link"]
+# possible: password, magic-link, oauth-google, oauth-microsoft,
+# oauth-github, oauth-apple, saml-sso, webauthn-passkeys
+authorization = "scoped-rbac"
+# none | simple-rbac | scoped-rbac | abac | groups
+
+[infrastructure.observability]
+logging = "json"            # text | json
+correlation_id = true
+healthcheck = true
+metrics = "prometheus"      # none | prometheus | otel
+tracing = "none"            # none | otel
+error_tracking = "none"     # none | sentry | glitchtip | honeybadger
+log_retention_days = 30
+
+[infrastructure.product]
+feature_flags = "internal-registry"
+# none | internal-registry | unleash | growthbook | launchdarkly
+email = "smtp"              # none | smtp | aws-ses | resend | postmark
+file_storage = "filesystem" # filesystem | s3 | local-with-s3-fallback
+background_jobs = "none"    # none | framework-native | celery | rq | bullmq | temporal
+cache = "none"              # none | in-memory | redis | memcached
+
+[infrastructure.ai]
+provider = "none"           # none | litellm | openai-direct | anthropic-direct
+encrypted_per_tenant_keys = false
+
+[infrastructure.webhooks]
+mode = "none"               # none | receive | send | both
+
+[infrastructure.compliance]
+pii_handling = true
+lgpd = true
+gdpr = false
+audit_trail = true
+
+# -----------------------------------------------------------------------------
+# Quality gates
+# -----------------------------------------------------------------------------
+[quality]
+coverage_min = 60
+coverage_branch = true
+mutation_testing = "weekly" # off | per-pr | weekly
+mutation_score_min = 60     # only if mutation_testing != off
+deps_block_severity = ["HIGH", "CRITICAL"]
+sast_block_severity = ["HIGH", "CRITICAL"]
+secrets_block = "any-match"
+cc_block_rank = "E"         # rank that blocks (E or F by default)
+cc_warn_rank = "D"
+mi_block_min = 10           # MI < this blocks
+mi_warn_min = 20            # MI < this warns
+dead_code_check = true
+
+[quality.tools]
+# Tool selections per function. Filled by init-project based on stack.
+# Empty values = use stack default from QUALITY.md.
+sast = ""
+deps = ""
+coverage = ""
+complexity = ""
+modularity = ""
+lint = ""
+format = ""
+types = ""
+secrets = "gitleaks"
+
+# -----------------------------------------------------------------------------
+# Database / schema quality
+# -----------------------------------------------------------------------------
+[database]
+migration_tool = "alembic"  # alembic | prisma | flyway | atlas | rails | none
+migration_linter = "squawk" # squawk (postgres) | strong_migrations | atlas | none
+schema_snapshot = true      # commit generated schema.sql for diff-in-PR
+erd_generation = true       # generate Mermaid ERD in CI
+drift_detection = true      # compare staging/prod schema vs committed
+
+# -----------------------------------------------------------------------------
+# Pre-PR checklist toggles
+# -----------------------------------------------------------------------------
+[pre_pr_check]
+release_notes = true
+components_md = true
+feature_flag = true
+test_quality = true         # forbid sleep/skip/empty assertions in tests
+migration_safety = true     # run migration linter when migrations/ changes
+sync_rules = []             # list of [[sync]] entries — see pre_pr_check.toml.example

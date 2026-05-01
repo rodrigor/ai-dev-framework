@@ -1,31 +1,31 @@
-# Glossário do domínio
+# Domain glossary
 
-Terminologia específica deste projeto. Evita que a IA invente sinônimos
-ou confunda conceitos próximos.
+Project-specific terminology. Prevents the AI from inventing synonyms
+or confusing closely-related concepts.
 
-> Esquema vazio. Preencha com os termos do seu domínio. Inclua sempre:
-> - Termo (e variações que NÃO devem ser usadas como sinônimo)
-> - Definição
-> - Onde aparece no código (módulo, modelo, rota)
+> Empty skeleton. Fill with your domain terms. Always include:
+> - Term (and variations that should NOT be used as synonyms)
+> - Definition
+> - Where it appears in the code (module, model, route)
 
 ---
 
-## Termos
+## Terms
 
-_Vazio._
+_Empty._
 
-<!-- Exemplo:
+<!-- Example:
 
 ### Tenant
-- **Definição:** Cliente do SaaS. Cada tenant tem dados isolados.
-- **NÃO confundir com:** "usuário" (um tenant tem N usuários),
-  "empresa" (sinônimo neste projeto, prefira "tenant" no código).
-- **Aparece em:** `src/models/tenant.py`, middleware de host routing.
+- **Definition:** SaaS customer. Each tenant has isolated data.
+- **NOT to be confused with:** "user" (a tenant has N users),
+  "company" (synonym in this project — prefer "tenant" in code).
+- **Appears in:** `src/models/tenant.py`, host-routing middleware.
 
 -->
 
-## Anti-sinônimos
+## Anti-synonyms
 
-Termos que parecem iguais mas têm significado distinto neste projeto.
+Terms that look the same but have distinct meanings in this project.
 
-_Vazio._
+_Empty._

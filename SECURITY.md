@@ -1,92 +1,95 @@
-# Políticas de segurança
+# Security policies
 
-Documento perene. Vale para qualquer projeto baseado neste framework.
-Decisões específicas de stack (qual scanner, qual versão) ficam em
+Perennial document. Applies to any project based on this framework.
+Stack-specific decisions (which scanner, which version) live in
 `QUALITY.md`.
 
-## Pipeline de segurança automatizado (CI)
+## Automated security pipeline (CI)
 
-Toda mudança passa por três classes de scanner antes do merge:
+Every change passes through three classes of scanner before merge:
 
-1. **SAST** — análise estática de código (segredos em logs, injeção SQL,
-   path traversal, criptografia fraca, etc.).
-2. **Análise de dependências** — CVEs conhecidos em libs e ambiente.
-3. **Detecção de segredos** — chaves, tokens, credenciais commitadas.
+1. **SAST** — static code analysis (secrets in logs, SQL injection,
+   path traversal, weak crypto, etc.).
+2. **Dependency analysis** — known CVEs in libraries and runtime.
+3. **Secret detection** — keys, tokens, credentials committed.
 
-Antes de abrir PR: nenhum scanner reporta finding **HIGH** ou **CRITICAL**.
+Before opening a PR: no scanner reports a finding at **HIGH** or
+**CRITICAL** severity.
 
-A escolha das ferramentas é definida em `QUALITY.md` baseada na stack.
+Tool selection is defined in `QUALITY.md` based on the stack.
 
-## Credenciais e segredos
+## Credentials and secrets
 
-- **Sempre criptografados em repouso.** Use cifragem simétrica forte
-  (Fernet/AES-GCM) com chave derivada de uma master key não commitada.
-- Master key vem de variável de ambiente ou secret manager — **nunca** do
-  código nem de arquivo versionado.
-- Credenciais de tenants (API keys de IA, SMTP de empresa) seguem o mesmo
-  padrão. Apenas os últimos 4 caracteres podem ser exibidos na UI.
-- **Nunca logar** valores de tokens, API keys, senhas — mesmo em DEBUG.
-  O SAST detecta e bloqueia.
-- Credenciais saem da memória assim que possível (não persistir em
-  variáveis globais).
+- **Always encrypted at rest.** Use strong symmetric encryption
+  (Fernet/AES-GCM) with a key derived from a non-committed master key.
+- Master key comes from an environment variable or secret manager —
+  **never** from code or a versioned file.
+- Tenant credentials (AI API keys, company SMTP) follow the same
+  pattern. Only the last 4 characters may be displayed in the UI.
+- **Never log** values of tokens, API keys, passwords — even at DEBUG.
+  SAST detects and blocks.
+- Credentials leave memory as soon as possible (do not persist in
+  global variables).
 
-## Autenticação
+## Authentication
 
-Padrões aplicáveis a qualquer fluxo de auth:
+Patterns applicable to any auth flow:
 
-- **Senha:** mínimo 12 chars, máximo 256, sem caracteres de controle.
-  Hash com bcrypt (rounds ≥ 12), Argon2id ou scrypt.
-- **Magic link:** TTL curto para login (15 min), TTL longo para convite
-  inicial (7 dias). Use `kind` separado no token.
-- **Reset de senha:** token TTL 30 min, single-use, invalida pendentes
-  do mesmo usuário.
-- **Resposta genérica em login/forgot/resend:** nunca revele se o email
-  existe. Mensagem padrão "se houver conta, enviamos um email".
-- **Rate limiting** em endpoints de auth (login, forgot, resend, verify).
+- **Password:** minimum 12 chars, maximum 256, no control characters.
+  Hash with bcrypt (rounds ≥ 12), Argon2id, or scrypt.
+- **Magic link:** short TTL for login (15 min), long TTL for initial
+  invite (7 days). Use a separate `kind` on the token.
+- **Password reset:** token TTL 30 min, single-use, invalidates pending
+  tokens for the same user.
+- **Generic response in login/forgot/resend:** never reveal whether the
+  email exists. Standard message: "if there is an account, we sent an
+  email".
+- **Rate limiting** on auth endpoints (login, forgot, resend, verify).
 
-## Bugs em produção — fluxo obrigatório
+## Production bug — mandatory flow
 
-1. Escreva um teste que reproduza o bug.
-2. Confirme que falha.
-3. Corrija.
-4. Confirme que passa.
+1. Write a test that reproduces the bug.
+2. Confirm it fails.
+3. Fix.
+4. Confirm it passes.
 
-Bugs sem teste regridem. Não há exceção.
+Bugs without tests regress. No exceptions.
 
-## Dependências externas — versão mais recente
+## External dependencies — latest version
 
-Antes de adicionar lib ao manifesto, **busque a versão estável mais recente
-no índice oficial** (PyPI/npm/crates.io/etc.) e fixe essa. Versões antigas
-podem estar faltando patches de CVE.
+Before adding a lib to the manifest, **search for the latest stable
+version on the official index** (PyPI/npm/crates.io/etc.) and pin that.
+Old versions may be missing CVE patches.
 
-Se a CI reportar CVE em lib transitiva, atualize o pin direto que puxa essa
-transitiva — não ignore.
+If CI reports a CVE in a transitive dep, update the direct pin that
+pulls it — don't ignore.
 
-## Logs e PII
+## Logs and PII
 
-- Não logar PII (CPF, email completo, telefone) em nível INFO ou superior.
-  Use DEBUG e mascare (`r***@example.com`).
-- Tokens, senhas, chaves: **nunca** em qualquer nível.
-- Stack traces que possam vazar dados sensíveis: sanitizar antes de
-  enviar para serviço externo (Sentry/etc).
+- Do not log PII (national ID, full email, phone) at INFO or above.
+  Use DEBUG and mask (`r***@example.com`).
+- Tokens, passwords, keys: **never** at any level.
+- Stack traces that may leak sensitive data: sanitize before sending
+  to external service (Sentry/etc).
 
-## Multi-tenancy (se aplicável)
+## Multi-tenancy (when applicable)
 
-- Toda query de leitura/escrita filtra por `tenant_id` na camada de
-  middleware/dependency, não por convenção do desenvolvedor.
-- Testes de regressão verificam que tenant A não vê dados de tenant B.
-- Impersonação por sysadmin é auditada com timestamps de início/fim.
+- Every read/write query filters by `tenant_id` at the
+  middleware/dependency layer, not by developer convention.
+- Regression tests verify that tenant A cannot see tenant B's data.
+- Sysadmin impersonation is audited with start/end timestamps.
 
-## Headers de segurança HTTP (web apps)
+## HTTP security headers (web apps)
 
 - `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`,
-  `X-Frame-Options: DENY` (ou CSP frame-ancestors).
-- `Content-Security-Policy` restritiva. Sem `unsafe-inline` em produção.
-- Cookies de sessão: `Secure`, `HttpOnly`, `SameSite=Lax` (ou Strict).
+  `X-Frame-Options: DENY` (or CSP frame-ancestors).
+- Restrictive `Content-Security-Policy`. No `unsafe-inline` in
+  production.
+- Session cookies: `Secure`, `HttpOnly`, `SameSite=Lax` (or Strict).
 
-## Auditoria
+## Audit log
 
-Eventos sensíveis (login, mudança de permissão, impersonação, exclusão
-de dados, mudança de credencial) gravados em log de auditoria com:
-ator, ação, alvo, timestamp, IP/user-agent. Retenção definida em política
-do projeto.
+Sensitive events (login, permission change, impersonation, data
+deletion, credential change) recorded in an audit log with: actor,
+action, target, timestamp, IP/user-agent. Retention defined in the
+project's policy.

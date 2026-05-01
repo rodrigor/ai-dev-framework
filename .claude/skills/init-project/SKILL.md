@@ -1,25 +1,25 @@
 ---
 name: init-project
-description: Inicializa um projeto baseado no ai-dev-framework. Detecta a stack tecnológica (Python, Node/TypeScript, Go, Rust, Java/Kotlin) lendo manifestos do projeto, propõe a tabela de ferramentas (SAST, análise de deps, cobertura, complexidade ciclomática, modularidade, segredos, lint, format, tipagem), pergunta os gates ao desenvolvedor (cobertura mínima, severidade que bloqueia), e gera os artefatos preenchidos — QUALITY.md, workflow CI, .pre-commit-config.yaml, configs das ferramentas. Use quando o usuário pedir para inicializar, configurar, fazer setup ou bootstrap de um novo projeto, ou quando mencionar "init project", "configurar quality", "escolher ferramentas de qualidade".
+description: Initializes a project based on ai-dev-framework. Detects the technology stack (Python, Node/TypeScript, Go, Rust, Java/Kotlin) by reading project manifests, asks the developer about non-functional requirements (containerization, auth methods, authorization model, multi-tenancy, logging, feature flags, AI integration, admin areas, email, file storage, background jobs, cache), proposes the tooling table (SAST, deps, coverage, cyclomatic complexity, modularity, secrets, lint, format, types), confirms gates (min coverage, blocking severity), and generates the populated artifacts — QUALITY.md, INFRASTRUCTURE.md, CI workflow, .pre-commit-config.yaml, tool configs, project.config.toml. Use when the user asks to initialize, configure, set up, or bootstrap a new project, or mentions "init project", "configure quality", "choose quality tools".
 ---
 
 # init-project
 
-Inicializa um projeto baseado no `ai-dev-framework`.
+Initializes a project based on the `ai-dev-framework`.
 
-## Quando usar
+## When to use
 
-- Repositório novo recém-clonado do template.
-- Projeto existente que vai adotar o arcabouço.
-- Mudança de stack que exige rever ferramentas.
+- Brand-new repository freshly cloned from the template.
+- Existing project adopting the framework.
+- Stack change requiring tool revision.
 
-## Procedimento
+## Procedure
 
-### 1. Detectar a stack
+### 1. Detect the stack
 
-Leia, em paralelo, os manifestos presentes:
+Read, in parallel, the manifests present:
 
-| Arquivo | Stack |
+| File | Stack |
 |---|---|
 | `pyproject.toml`, `requirements.txt`, `setup.py`, `Pipfile` | Python |
 | `package.json` (+ `tsconfig.json` → TypeScript) | Node/TS |
@@ -29,76 +29,145 @@ Leia, em paralelo, os manifestos presentes:
 | `Gemfile` | Ruby |
 | `composer.json` | PHP |
 
-Pode haver mais de uma stack (ex: backend Python + frontend TS). Trate
-cada uma.
+There may be more than one stack (e.g., Python backend + TS frontend).
+Handle each.
 
-### 2. Propor tabela de ferramentas
+### 2. Ask about non-functional requirements (NFRs)
 
-Baseie-se em `QUALITY.md` (seção "Tabela de referência por stack"). Para
-cada função (SAST, deps, cobertura, complexidade, modularidade, segredos,
-lint, format, tipagem, dead code) apresente:
+Use `INFRASTRUCTURE.md` as the catalog. Walk through the questions in
+this order (one at a time, with a suggested default):
 
-- Ferramenta padrão sugerida
-- Alternativas
-- Comando de instalação/uso
+**Layer 1 — Structural decisions**
+1. Primary stack (language + web framework)
+2. Database (Postgres / SQLite / MySQL / Mongo)
+3. Multi-tenancy? (none / shared-DB with `tenant_id` / DB-per-tenant)
+4. Containerization (Docker / none)
 
-Apresente como tabela e peça confirmação por linha. Permita o dev
-sobrescrever qualquer escolha.
+**Layer 2 — Auth & authorization**
+5. Auth methods (password, magic link, Google, Microsoft, GitHub, SAML SSO)
+6. Authorization model (none / simple RBAC / RBAC with scope / ABAC)
+7. Admin areas (sysadmin global, tenant admin, both, none)
 
-### 3. Perguntar gates
+**Layer 3 — Operations**
+8. Logging (text / structured JSON / with correlation ID)
+9. Healthcheck/readiness endpoints
+10. Metrics (Prometheus / none)
+11. Distributed tracing (OpenTelemetry / none)
+12. Log retention (days)
 
-Faça as seguintes perguntas (uma de cada vez, com default sugerido):
+**Layer 4 — Product features that become infra**
+13. Feature flags (yes — internal registry / Unleash / none)
+14. Transactional email (SMTP / SES / Resend / Postmark)
+15. Background jobs (Celery / RQ / framework-native / none)
+16. File storage (filesystem / S3-compatible)
+17. Cache (Redis / in-memory / none)
 
-- **Cobertura mínima inicial?** (default: 60%, sobe 1pp por release)
-- **Severidade de deps que bloqueia?** (default: HIGH e CRITICAL)
-- **CC máximo aceito sem revisão?** (default: rank D — `radon` ou
-  equivalente)
-- **MI mínimo?** (default: 20)
-- **Política de segredos?** (default: gitleaks bloqueia qualquer match)
-- **Roda em pre-commit local?** (default: lint + format + gitleaks)
+**Layer 5 — AI and integrations**
+18. AI integration (none / LiteLLM multi-provider / direct provider SDK)
+19. External webhooks (receive / send / both / none)
 
-### 4. Antes de fixar versões — buscar a mais recente
+**Layer 6 — Compliance/policy**
+20. Project handles PII? (affects logging, retention, exports)
+21. LGPD / GDPR applicable? (generates retention policy, export, delete)
+22. Audit log (sensitive events in separate log / none)
 
-Para cada ferramenta escolhida, **busque na internet a versão estável
-mais recente** (PyPI / npm / crates.io / GitHub releases) antes de
-fixar no manifesto. Não confiar em valores conhecidos — podem estar
-desatualizados.
+Persist all answers into `project.config.toml` at the repo root.
 
-### 5. Gerar artefatos
+### 3. Propose the tooling table
 
-Crie/atualize:
+Based on `QUALITY.md` ("Reference table by stack" section). For each
+function (SAST, deps, coverage, complexity, modularity, secrets,
+lint, format, types, dead code), present:
 
-1. **`QUALITY.md`** — preenchido com tabela real de ferramentas e gates.
-   Remova as seções `[STACK X]` que não se aplicam.
-2. **`.github/workflows/quality.yml`** (ou GitLab CI/Bitbucket) com
-   um job por gate.
-3. **`.pre-commit-config.yaml`** com hooks locais.
-4. **Configs das ferramentas:**
-   - Python: `pyproject.toml [tool.ruff]`, `[tool.mypy]`, `[tool.pytest.ini_options]`
-   - Node: `eslint.config.js` ou `biome.json`, `tsconfig.json` strict, `vitest.config.ts`
-   - Outras conforme stack
-5. **`.gitleaks.toml`** com allowlist mínima.
-6. **Entry inicial em `CHANGELOG.md`** documentando o init.
+- Suggested default tool
+- Alternatives
+- Install/use command
 
-### 6. Smoke test
+Present as a table and ask for confirmation per row. Allow the dev to
+override any choice.
 
-Para cada ferramenta instalada, rode em modo `--version` ou em diff vazio
-para confirmar que está funcional. Reporte o que passou e o que falhou.
+### 4. Ask about gates
 
-### 7. Resumo final
+Ask the following (one at a time, with a default):
 
-Apresente:
-- Stack(s) detectada(s)
-- Ferramentas escolhidas (tabela)
-- Gates configurados
-- Arquivos criados/modificados
-- Próximos passos (rodar `pre-commit install`, configurar secrets do CI,
-  preencher `GLOSSARY.md`, etc.)
+- **Initial minimum coverage?** (default: 60%, +1pp per release)
+- **Branch coverage in addition to line?** (default: yes)
+- **Mutation testing cadence?** (default: weekly CI job; alternatives:
+  per-PR / off)
+- **Initial mutation-score floor?** (default: 60%, target 80% in 6 months)
+- **Dep severity that blocks?** (default: HIGH and CRITICAL)
+- **Max accepted CC without review?** (default: rank D — `radon` or
+  equivalent)
+- **Min MI?** (default: 20)
+- **Secrets policy?** (default: gitleaks blocks any match)
+- **Run on local pre-commit?** (default: lint + format + gitleaks)
 
-## Princípios
+### 4b. Ask about database schema quality (if `database != "none"`)
 
-- **Não imponha:** sempre apresente padrão e alternativas. O dev decide.
-- **Versão mais recente:** sempre buscar antes de fixar.
-- **Mínimo viável:** começar com gates conservadores. Apertar com o tempo.
-- **Documente o "porquê":** ao gerar `QUALITY.md`, comente brevemente o
-  motivo de cada escolha.
+- **Migration linter?** (default: `squawk` for Postgres,
+  `strong_migrations` for Rails-style, `atlas` for generic)
+- **Schema snapshot committed?** (default: yes — generate `schema.sql`
+  on every migration, diff visible in PRs)
+- **ERD generation in CI?** (default: yes)
+- **Drift detection in staging/prod?** (default: yes if Postgres/MySQL)
+- **Tenant-isolation regression test?** (default: yes if
+  `multi_tenancy = "shared-db"`)
+
+### 5. Before pinning versions — fetch the latest
+
+For each chosen tool, **fetch the latest stable version online** (PyPI
+/ npm / crates.io / GitHub releases) before pinning in the manifest.
+Don't trust known values — they may be stale.
+
+### 6. Generate artifacts
+
+Create/update:
+
+1. **`QUALITY.md`** — populated with the real tools and gates. Remove
+   the `[STACK X]` sections that don't apply.
+2. **`INFRASTRUCTURE.md`** — populated with the dev's NFR answers.
+3. **`project.config.toml`** — declarative configuration that
+   crystalizes the answers (drives regeneration later).
+4. **`.github/workflows/quality.yml`** (or GitLab CI / Bitbucket) with
+   one job per gate.
+5. **`.pre-commit-config.yaml`** with local hooks.
+6. **Tool configs:**
+   - Python: `pyproject.toml [tool.ruff]`, `[tool.mypy]`,
+     `[tool.pytest.ini_options]`
+   - Node: `eslint.config.js` or `biome.json`, strict `tsconfig.json`,
+     `vitest.config.ts`
+   - Others by stack
+7. **`.gitleaks.toml`** with a minimal allowlist.
+8. **Initial entry in `CHANGELOG.md`** documenting the init.
+9. **Stack/infra-specific scaffolding** (when applicable):
+   - `Dockerfile` + `docker-compose.yml` if containerization
+   - Auth scaffolding (login routes, magic-link/OAuth handlers,
+     password policy)
+   - Tenant middleware if multi-tenant
+   - Admin area shell if requested
+
+### 7. Smoke test
+
+For each installed tool, run in `--version` mode or against an empty
+diff to confirm it's functional. Report what passed and what failed.
+
+### 8. Final summary
+
+Present:
+- Detected stack(s)
+- Selected tools (table)
+- Configured gates
+- NFRs decided (auth methods, multi-tenancy, etc.)
+- Created/modified files
+- Next steps (run `pre-commit install`, configure CI secrets, fill
+  `GLOSSARY.md`, etc.)
+
+## Principles
+
+- **Don't impose:** always present default + alternatives. Dev decides.
+- **Latest version:** always fetch before pinning.
+- **Minimum viable:** start with conservative gates. Tighten over time.
+- **Document the "why":** when generating `QUALITY.md`, briefly comment
+  the reason for each choice.
+- **Idempotent:** rerunning `/init-project` should reconcile, not
+  duplicate. Use `project.config.toml` as state.

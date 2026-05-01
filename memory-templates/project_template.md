@@ -1,41 +1,41 @@
 # project_<slug>.md
 
-> Template para memórias do tipo `project_*` — contexto vivo do projeto.
+> Template for `project_*` memories — living context of the project.
 
 ---
 
-# <Título do tópico>
+# <Topic title>
 
-**Status:** <em planejamento | em implementação | concluído | pausado>
-**Última atualização:** YYYY-MM-DD
+**Status:** <planning | implementing | done | paused>
+**Last updated:** YYYY-MM-DD
 
-## Contexto
+## Context
 
-<2-5 linhas: o que é essa iniciativa/decisão/peculiaridade, por que
-existe, quem pediu.>
+<2–5 lines: what this initiative/decision/peculiarity is, why it
+exists, who asked.>
 
-## Estado atual
+## Current state
 
-<O que já foi feito, o que falta. Use bullets.>
+<What's already done, what's pending. Use bullets.>
 
-- [x] Item concluído
-- [ ] Item pendente
+- [x] Done item
+- [ ] Pending item
 
-## Decisões tomadas
+## Decisions taken
 
-<Bullets das escolhas que afetam código futuro. Se for grande, vire ADR.>
+<Bullets of choices that affect future code. If large, promote to ADR.>
 
-## Pontos de atenção
+## Watch-outs
 
-<O que a IA precisa lembrar ao mexer em código relacionado. Riscos,
-armadilhas, dependências escondidas.>
+<What the AI must remember when touching related code. Risks, traps,
+hidden dependencies.>
 
-## Quando revisitar
+## When to revisit
 
-<Trigger objetivo: "quando empresa passar de N usuários", "após release X",
-"quando lib Y atingir versão Z", "data >= YYYY-MM-DD".>
+<Objective trigger: "when company exceeds N users", "after release X",
+"when lib Y reaches version Z", "date >= YYYY-MM-DD".>
 
 ## Links
 
-- ADR: `docs/adr/NNNN-xxx.md` (se existe)
+- ADR: `docs/adr/NNNN-xxx.md` (if any)
 - Issue/ticket: <url>

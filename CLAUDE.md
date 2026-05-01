@@ -1,198 +1,208 @@
-# Instruções de desenvolvimento — projeto baseado em ai-dev-framework
+# Development instructions — project based on ai-dev-framework
 
-Este arquivo é carregado em toda sessão de IA. Regras aqui têm precedência
-sobre defaults do agente.
+This file is loaded into every AI session. Rules here take precedence
+over agent defaults.
 
-> Adapte as seções marcadas `[ADAPTAR]` ao seu projeto. As demais são perenes
-> e devem permanecer.
+> Adapt sections marked `[ADAPT]` to your project. The rest is perennial
+> and should remain.
 
 ---
 
-## ⚠️ Reutilização de componentes — consulte SEMPRE antes de codar
+## ⚠️ Component reuse — ALWAYS check before coding
 
-Antes de implementar qualquer helper, módulo, dependência, service, macro
-ou bloco de lógica reutilizável, **consulte `COMPONENTS.md`** (na raiz).
-Ele cataloga tudo que já existe.
+Before implementing any helper, module, dependency, service, macro, or
+reusable logic block, **consult `COMPONENTS.md`** at the repo root.
+It catalogs everything that already exists.
 
-Regra dura:
-- **Não reimplemente** algo que já existe. Reutilize.
-- **Se precisa variar**, generalize o componente existente (parâmetros,
-  função comum extraída) em vez de criar uma variante.
-- **Se encontrar duplicação** durante refactor, unifique e atualize
+Hard rule:
+- **Do not reimplement** something that already exists. Reuse it.
+- **If you need a variation**, generalize the existing component
+  (parameters, extracted common function) instead of forking it.
+- **If you find duplication** during a refactor, unify and update
   `COMPONENTS.md`.
-- **Ao criar algo genuinamente novo e reutilizável**, adicione ao catálogo
-  na mesma entrega — caminho, assinatura, propósito.
+- **When you create something genuinely new and reusable**, catalog it
+  in the same delivery — path, signature, purpose.
 
-`COMPONENTS.md` é fonte da verdade. Mantenha-o vivo.
-
----
-
-## Princípios de UX/UI (obrigatórios em qualquer interface)
-
-A interface deve ser **intuitiva e minimalista** — o menor número de
-elementos visuais necessários para cumprir a tarefa.
-
-1. **Menos é mais.** Cada elemento precisa justificar a presença. Prefira
-   esconder (collapse, abas, modais) a empilhar tudo.
-2. **Priorize o essencial.** Campos importantes no topo; secundários em
-   seções colapsáveis com default sensato.
-3. **Priorize a informação nas exibições.** Status/nome/progresso primeiro;
-   metadados (autor, data, IDs) em segundo plano.
-4. **Defaults inteligentes.** Todo campo opcional tem default que cobre
-   80% dos casos.
-5. **Sugira simplificações proativamente.** Se notar excesso de campos,
-   etapas redundantes ou rótulos verbosos, **aponte antes de implementar**.
-   Não simplifique silenciosamente.
-6. **Comunicação visual consistente.** Reuse padrões/componentes
-   existentes em vez de criar variantes.
-
-Estas regras têm precedência sobre estética pontual.
+`COMPONENTS.md` is the source of truth. Keep it alive.
 
 ---
 
-## Workflow de bug em produção
+## UX/UI principles (mandatory in any interface)
 
-1. **Escreva um teste** que reproduza o bug antes de corrigir.
-2. Confirme que o teste falha.
-3. Corrija o bug.
-4. Confirme que o teste passa.
+The interface must be **intuitive and minimalist** — the smallest number
+of visual elements needed to accomplish the task.
 
-Bugs sem teste regridem. Não corrija sem teste.
+1. **Less is more.** Every element must justify its presence. Prefer
+   hiding (collapse, tabs, modals) over stacking everything.
+2. **Prioritize the essential.** Important fields at the top; secondary
+   ones in collapsible sections with sensible defaults.
+3. **Prioritize information in displays.** Status / name / progress
+   first; metadata (author, date, IDs) in the background.
+4. **Smart defaults.** Every optional field has a default that covers
+   80% of cases.
+5. **Suggest simplifications proactively.** If you notice excess fields,
+   redundant steps, or verbose labels, **flag it before implementing**.
+   Don't simplify silently.
+6. **Consistent visual language.** Reuse existing patterns/components
+   instead of creating variants.
 
----
-
-## Release notes — registrar toda mudança funcional
-
-A fonte da verdade do histórico é o arquivo de release notes do projeto
-(`CHANGELOG.md` ou equivalente). Sempre que adicionar, alterar, remover
-ou corrigir uma funcionalidade, registre uma entrada na seção **Em
-desenvolvimento** (primeiro item):
-
-- `added` — nova funcionalidade
-- `changed` — alteração em funcionalidade existente
-- `fixed` — correção de bug
-- `removed` — funcionalidade removida
-- `security` — correção de segurança
-
-Ao publicar versão: substitua "Em desenvolvimento" por
-`{version, date, ...}` e crie nova seção vazia acima.
-
-Se o projeto tem distinção entre mudanças visíveis ao usuário e mudanças
-admin/infra, mantenha duas trilhas separadas.
+These rules take precedence over point aesthetic preferences.
 
 ---
 
-## Dependências externas — sempre versão mais recente
+## Production bug workflow
 
-Antes de adicionar qualquer biblioteca ao manifesto de deps (`requirements.txt`,
-`package.json`, `go.mod`, `Cargo.toml`, etc.), **busque na internet a versão
-estável mais recente** (PyPI / npm / crates.io / pkg.go.dev / Maven Central) e
-fixe essa versão. Nunca assuma que uma versão conhecida é a atual — pode estar
-faltando patches de CVE.
+1. **Write a test** that reproduces the bug before fixing.
+2. Confirm the test fails.
+3. Fix the bug.
+4. Confirm the test passes.
 
----
-
-## Segurança — políticas duras (ver `SECURITY.md`)
-
-- Credenciais sempre criptografadas em repouso. Nunca em plaintext nem em env
-  vars sem necessidade.
-- **Nunca logar** valores de tokens, API keys, senhas, mesmo em DEBUG. Os
-  scanners SAST detectam e bloqueiam.
-- Em fluxos de auth, **nunca revelar se um email/usuário existe**. Resposta
-  genérica em login/forgot/resend.
-- Antes de PR: nenhum scanner com finding HIGH ou CRITICAL.
+Bugs without tests regress. No exceptions.
 
 ---
 
-## Política de soft-delete
+## Release notes — register every functional change
 
-Três maneiras de "remover" — escolha por tipo:
+The source of truth is the project's release notes file (`CHANGELOG.md`
+or equivalent). Whenever you add, change, remove, or fix a feature,
+record an entry under the **Unreleased** section (top of file):
 
-1. **Hard-delete** (`DELETE` físico): tokens efêmeros, logs após retenção,
-   dados sensíveis com TTL.
-2. **Soft-delete** (`deleted_at` nullable): entidades de produto que podem
-   ser restauradas. Lista padrão omite `deleted_at IS NOT NULL`.
-3. **Status enum** (`CANCELLED`, `ARCHIVED`, `CLOSED`): estado de máquina
-   de domínio onde a história importa. Não use `deleted_at` aqui.
+- `added` — new feature
+- `changed` — change to an existing feature
+- `fixed` — bug fix
+- `removed` — feature removed
+- `security` — security fix
 
-Casos especiais (User.active, Tenant.archived_at) — não duplicar padrão.
-**Não introduza um quarto.**
+When publishing a version: replace "Unreleased" with
+`{version, date, ...}` and create a new empty section above it.
 
----
-
-## Análise periódica de complexidade e manutenibilidade
-
-Após qualquer **grande feature** (módulo novo, refactor amplo, fix grande),
-rode os comandos definidos em `QUALITY.md` (seção "Complexidade") e cruze
-com churn (git log dos últimos 3 meses).
-
-**Réguas de decisão (genéricas; valores exatos em `QUALITY.md`):**
-
-| Métrica | Limiar | Ação |
-|---------|--------|------|
-| CC rank E ou F | qualquer churn | Decompor antes do próximo merge no arquivo |
-| CC rank D | churn alto | Hotspot — planejar decomposição na próxima sprint |
-| MI rank B (< 20) | — | Refactor prioritário |
-| MI rank C (< 10) | — | Bloqueio — decompor antes de qualquer feature nova |
+If the project distinguishes user-visible from admin/infra changes,
+maintain two parallel tracks.
 
 ---
 
-## Controles automáticos — `QUALITY.md`
+## External dependencies — always the latest version
 
-**Fonte única dos controles** (CI, pre-commit, scanners, testes,
-cobertura, complexidade, modularidade) é `QUALITY.md`.
-
-Consulte **antes de**:
-- Adicionar/remover workflow de CI
-- Introduzir novo linter/scanner
-- Mudar política (cobertura mínima, severidade que bloqueia, etc.)
-- Investigar falha de CI
-
-Ao introduzir novo controle, **atualize `QUALITY.md`** na mesma entrega:
-caminho do script, o que verifica, o que bloqueia, como rodar localmente.
+Before adding any library to the dep manifest (`requirements.txt`,
+`package.json`, `go.mod`, `Cargo.toml`, etc.), **search online for the
+latest stable version** (PyPI / npm / crates.io / pkg.go.dev / Maven
+Central) and pin that. Never assume a known version is current — it
+may be missing CVE patches.
 
 ---
 
-## Confirmação de ações destrutivas
+## Security — hard policies (see `SECURITY.md`)
 
-Use o componente de modal do projeto. **Nunca** `alert()` / `confirm()`
-nativos. Defina o padrão único em `COMPONENTS.md`.
-
----
-
-## Feature flags em toda nova funcionalidade
-
-Toda feature nova nasce atrás de feature flag (registry + checagem na rota
-e na UI). Default pode ser `True` mas a flag deve existir para permitir
-desativação rápida em incidente.
+- Credentials always encrypted at rest. Never plaintext, never in env
+  vars without need.
+- **Never log** values of tokens, API keys, passwords, even at DEBUG.
+  SAST scanners detect and block.
+- In auth flows, **never reveal whether an email/user exists**. Generic
+  response in login / forgot / resend.
+- Before opening a PR: no scanner finding at HIGH or CRITICAL severity.
 
 ---
 
-## Internacionalização
+## Soft-delete policy
 
-Chaves, enums, identificadores e variáveis nascem em **inglês** desde o
-início. Strings visíveis ao usuário passam por sistema de i18n.
+Three ways to "remove" — choose by entity type:
+
+1. **Hard-delete** (physical `DELETE`): ephemeral tokens, logs after
+   retention, sensitive data with TTL.
+2. **Soft-delete** (`deleted_at` nullable): product entities that may
+   be restored. Default listing omits `deleted_at IS NOT NULL`.
+3. **Status enum** (`CANCELLED`, `ARCHIVED`, `CLOSED`): domain state
+   machine where history matters. Don't use `deleted_at` here.
+
+Special cases (User.active, Tenant.archived_at) — don't duplicate the
+pattern. **Don't introduce a fourth.**
 
 ---
 
-## [ADAPTAR] Domínio do projeto
+## Periodic complexity & maintainability analysis
 
-Liste aqui as **regras específicas do seu domínio**: sincronizações
-obrigatórias entre arquivos, módulos críticos, demos a manter, dívidas
-técnicas em aberto. Veja `MEMORY.md` para o catálogo de memórias.
+After any **large feature** (new module, broad refactor, big fix), run
+the commands defined in `QUALITY.md` ("Complexity" section) and cross
+with churn (git log of the last 3 months).
+
+**Decision thresholds (generic; exact values in `QUALITY.md`):**
+
+| Metric | Threshold | Action |
+|---|---|---|
+| CC rank E or F | any churn | Decompose before next merge to the file |
+| CC rank D | high churn | Hotspot — plan refactor next sprint |
+| MI rank B (< 20) | — | Priority refactor |
+| MI rank C (< 10) | — | Block — decompose before any new feature |
 
 ---
 
-## [ADAPTAR] Knowledge graph / navegação de código
+## Automated controls — `QUALITY.md`
 
-Se o projeto usa knowledge graph (code-review-graph ou similar), priorize-o
-sobre Grep/Glob/Read.
+**Single source of truth for all controls** (CI, pre-commit, scanners,
+tests, coverage, complexity, modularity) is `QUALITY.md`.
 
-| Tarefa | Ferramenta |
+Consult it **before**:
+- Adding/removing CI workflows
+- Introducing a new linter/scanner
+- Changing policy (min coverage, blocking severity, etc.)
+- Investigating a CI failure
+
+When introducing a new control, **update `QUALITY.md`** in the same
+delivery: script path, what it checks, what it blocks, how to run it
+locally.
+
+---
+
+## Confirmation of destructive actions
+
+Use the project's modal component. **Never** native `alert()` /
+`confirm()`. Define the single pattern in `COMPONENTS.md`.
+
+---
+
+## Feature flags on every new feature
+
+Every new feature ships behind a feature flag (registry + check at the
+route and UI levels). Default may be `True`, but the flag **must exist**
+to allow rapid disable during incidents without redeploy.
+
+---
+
+## Internationalization
+
+Keys, enums, identifiers, and code-facing variables are written in
+**English** from the start. User-visible strings go through an i18n
+system.
+
+---
+
+## [ADAPT] Project domain
+
+List here the **domain-specific rules**: mandatory file synchronizations,
+critical modules, demos to maintain, open technical debts. See
+`memory-templates/` for the catalog of memory types the AI maintains.
+
+---
+
+## [ADAPT] Knowledge graph / code navigation
+
+If the project uses a knowledge graph (code-review-graph or similar),
+prefer it over Grep/Glob/Read.
+
+| Task | Tool |
 |---|---|
-| Explorar | semantic search no graph |
-| Impacto | impact_radius / get_affected_flows |
+| Explore | semantic search on the graph |
+| Impact | impact_radius / get_affected_flows |
 | Code review | detect_changes + get_review_context |
-| Relacionamentos | callers/callees/imports/tests |
+| Relationships | callers / callees / imports / tests |
 
-Fall back para Grep/Read **só** quando o graph não cobre.
+Fall back to Grep/Read **only** when the graph doesn't cover the need.
+
+---
+
+## [ADAPT] Infrastructure choices
+
+Infrastructure decisions taken at init time live in `INFRASTRUCTURE.md`
+(authentication, authorization, multi-tenancy, logging, feature flags,
+AI integration, admin areas, etc.). Consult it before adding/changing
+any of those concerns.

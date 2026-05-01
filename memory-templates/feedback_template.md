@@ -1,44 +1,44 @@
 # feedback_<slug>.md
 
-> Template para memórias do tipo `feedback_*` — regras de comportamento
-> que o dev corrigiu/validou.
+> Template for `feedback_*` memories — behavior rules the dev
+> corrected/validated.
 
 ---
 
-# <Título curto e imperativo>
+# <Short imperative title>
 
-**Quando:** <gatilho exato — ex: "ao mexer em template HTML">
-**Faça:** <ação obrigatória — ex: "rode `npm run build:css` antes de
-commitar">
-**Não faça:** <ação proibida ou anti-padrão>
+**When:** <exact trigger — e.g., "when touching an HTML template">
+**Do:** <mandatory action — e.g., "run `npm run build:css` before
+committing">
+**Don't:** <forbidden action or anti-pattern>
 
-## Por quê
+## Why
 
-<1-3 linhas explicando a razão. Inclua a conta que justifica a regra:
-incidente que aconteceu, retrabalho que evita, risco que cobre.>
+<1–3 lines explaining the reason. Include the rationale: incident that
+happened, rework it avoids, risk it covers.>
 
-## Como verificar
+## How to verify
 
-<comando ou critério objetivo de verificação. Se virou hook, mencione.>
+<Objective check command or criterion. If it became a hook, mention it.>
 
 ---
 
-## Exemplo preenchido
+## Filled example
 
-# Sempre rebuildar CSS antes de commitar
+# Always rebuild CSS before committing
 
-**Quando:** Tocar qualquer arquivo em `templates/`.
-**Faça:** Rodar `npm run build:css` e adicionar `static/css/app.css` ao
+**When:** Touching any file under `templates/`.
+**Do:** Run `npm run build:css` and add `static/css/app.css` to the
 commit.
-**Não faça:** Commitar template sem rebuild — CI quebra com erro
-"app.css desatualizado".
+**Don't:** Commit a template without rebuild — CI fails with
+"app.css out of date".
 
-## Por quê
+## Why
 
-O container de runtime não tem Node. CSS é compilado e versionado.
-Pipeline tem gate explícito que falha se hash do CSS não bate com hash
-das classes nos templates.
+The runtime container has no Node. CSS is compiled and versioned. The
+pipeline has an explicit gate that fails when CSS hash doesn't match
+the classes in templates.
 
-## Como verificar
+## How to verify
 
-`scripts/pre_pr_check.py` valida automaticamente.
+`scripts/pre_pr_check.py` validates automatically.
