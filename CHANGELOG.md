@@ -10,6 +10,29 @@ Versioning: [SemVer](https://semver.org/).
 ## Unreleased
 
 ### added
+- `DEPENDENCIES.md`: full policy for adding/updating external deps —
+  health checks (last release, maintainers, CVEs, license),
+  latest-stable-version verification, pinning strategy by code type
+  (app vs library vs dev), routine update cadence, transitive control,
+  removal policy.
+- `CODE_STYLE.md`: code-style guide focused on AI-maintainability —
+  locality, explicit-over-implicit, type-everything, small pure
+  functions, one-canonical-way, no premature abstraction. The
+  "two costs" framing (token cost + bug-injection probability) drives
+  every rule.
+- `dependency-evaluator` subagent: evaluates a candidate library
+  before it lands in the manifest. Verifies latest stable, no CVEs,
+  license, maintenance signals; for major bumps fetches migration
+  guide and produces old → new syntax mapping.
+- `feedback_dep_template.md` memory pattern: captures new idiom on
+  major-version adoption (e.g., Pydantic v2, React 19) so future
+  sessions don't regress to deprecated syntax.
+- CLAUDE.md sections referencing both new docs at the top of the
+  rule list.
+
+### changed
+
+### added
 - Initial scaffolding of `ai-dev-framework`: perennial documents
   (CLAUDE.md, SECURITY.md, PROCESS.md, QUALITY.md skeleton,
   COMPONENTS.md, GLOSSARY.md, INFRASTRUCTURE.md), memory templates

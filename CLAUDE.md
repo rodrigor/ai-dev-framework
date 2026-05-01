@@ -8,6 +8,32 @@ over agent defaults.
 
 ---
 
+## ⚠️ Code style — see `CODE_STYLE.md`
+
+Code is written to be cheap to read and safe to change by an AI agent.
+Hard rules (full rationale in `CODE_STYLE.md`):
+
+- **Locality:** a function's behavior is determined by its arguments.
+  No spooky action via globals, monkey-patching, or import-time side
+  effects.
+- **Explicit over implicit:** no metaclasses/decorators that mutate at
+  import; no auto-discovery; explicit registration.
+- **Type everything** in typed languages. Forbid `Any`/`unknown` in
+  production code.
+- **Small, pure functions:** ≤ 40 lines target, ≤ 80 hard, CC ≤ 10.
+- **One canonical way per common operation.** No two HTTP clients,
+  two date libs, two ways to log.
+- **No premature abstraction.** Three concrete duplicates is the
+  earliest you should extract.
+- **Comments explain why, not what.** Module headers explain purpose
+  and contracts.
+- **Errors are typed and documented.** Forbid `except: pass` and bare
+  `Exception`.
+- **Search-friendly, consistent names.** `tenant_id` everywhere — not
+  `tenantId` here, `company_id` there.
+
+---
+
 ## ⚠️ Component reuse — ALWAYS check before coding
 
 Before implementing any helper, module, dependency, service, macro, or
@@ -81,13 +107,22 @@ maintain two parallel tracks.
 
 ---
 
-## External dependencies — always the latest version
+## External dependencies — see `DEPENDENCIES.md`
 
-Before adding any library to the dep manifest (`requirements.txt`,
-`package.json`, `go.mod`, `Cargo.toml`, etc.), **search online for the
-latest stable version** (PyPI / npm / crates.io / pkg.go.dev / Maven
-Central) and pin that. Never assume a known version is current — it
-may be missing CVE patches.
+Full policy in `DEPENDENCIES.md`. Hard rules:
+
+- **Default answer is "don't add."** Stdlib first, existing code
+  second, third-party last.
+- **Always look up the latest stable version online** before pinning.
+  Never trust memory. Use `pip index versions`, `npm view`, etc.
+- **Run health checks** on the candidate (active maintenance, no
+  open CVEs in the proposed version, license compatible). Use the
+  `dependency-evaluator` subagent.
+- **Major-version upgrades** require reading the migration guide and
+  writing code in the **new idiom** from day one. Create a
+  `feedback_<lib>_v<version>.md` memory capturing old → new syntax
+  patterns so future sessions don't regress.
+- **Remove unused deps** in the same PR that drops the last consumer.
 
 ---
 

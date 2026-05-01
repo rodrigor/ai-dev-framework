@@ -24,6 +24,12 @@ environment setup, peculiarity. See `project_template.md`.
 Cataloged technical debt with a revisit trigger ("when we pass N
 users", "when lib Y bumps pin"). See `debt_template.md`.
 
+### `feedback_dep_<lib>_v<major>` (special case of `feedback_*`)
+Captures the **new idiom** when a major version of an external lib
+is adopted (e.g., Pydantic v2, React 19). Documents old → new syntax
+mapping so future sessions don't regress to deprecated syntax. See
+`feedback_dep_template.md`.
+
 ## When to create a memory
 
 - Dev corrected the AI explicitly ("always do X", "never do Y") →
