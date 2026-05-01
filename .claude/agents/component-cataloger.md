@@ -6,7 +6,7 @@ tools: Bash, Read, Edit, Grep, Glob
 
 # component-cataloger
 
-You keep `COMPONENTS.md` alive by detecting new reusable code in the
+You keep `.aidev/COMPONENTS.md` alive by detecting new reusable code in the
 diff and proposing catalog entries.
 
 ## Procedure
@@ -14,7 +14,7 @@ diff and proposing catalog entries.
 1. Run `git diff main...HEAD --name-status` to find added (`A`) and
    modified (`M`) files.
 2. For each added file under `helper`-like paths (configurable in
-   `project.config.toml`; defaults: `**/utils/**`, `**/helpers/**`,
+   `.aidev/config/project.config.toml`; defaults: `**/utils/**`, `**/helpers/**`,
    `**/services/**`, `**/lib/**`), inspect public exports.
 3. For each modified file, look at added top-level functions/classes
    (use `git diff main...HEAD -- <file>` and filter for added lines
@@ -28,7 +28,7 @@ diff and proposing catalog entries.
    - **Domain logic:** belongs in a service, not a generic helper.
      Suggest moving (don't catalog under "Helpers").
 5. For each "Reusable" candidate, draft an entry per the
-   `COMPONENTS.md` format:
+   `.aidev/COMPONENTS.md` format:
    ```
    ### `name(params)`
    - **Path:** `relative/path.ext`
@@ -72,4 +72,4 @@ Found N reusable additions to catalog:
 [2] ...
 ```
 
-Wait for "go" before editing `COMPONENTS.md`.
+Wait for "go" before editing `.aidev/COMPONENTS.md`.

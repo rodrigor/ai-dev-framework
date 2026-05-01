@@ -1,5 +1,5 @@
-# Configuration for scripts/pre_pr_check.py.
-# Copy to `pre_pr_check.toml` at the project root and adjust.
+# Configuration for .aidev/scripts/pre_pr_check.py.
+# Copy to `.aidev/config/pre_pr_check.toml` and adjust.
 
 # Base branch for comparison (usually main or develop)
 base = "main"

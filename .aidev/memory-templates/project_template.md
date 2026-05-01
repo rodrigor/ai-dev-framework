@@ -37,5 +37,5 @@ hidden dependencies.>
 
 ## Links
 
-- ADR: `docs/adr/NNNN-xxx.md` (if any)
+- ADR: `.aidev/adr/NNNN-xxx.md` (if any)
 - Issue/ticket: <url>

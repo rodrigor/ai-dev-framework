@@ -34,11 +34,18 @@ Handle each.
 
 ### 2. Ask about non-functional requirements (NFRs)
 
-Use `INFRASTRUCTURE.md` as the catalog. Walk through the questions in
+Use `.aidev/INFRASTRUCTURE.md` as the catalog. Walk through the questions in
 this order (one at a time, with a suggested default):
 
 **Layer 1 — Structural decisions**
-1. Primary stack (language + web framework)
+1. Primary stack (language + web framework). Defaults by use case
+   (see `.aidev/INFRASTRUCTURE.md` "Stack" section for the full rationale):
+   - Backend SaaS → **Python (FastAPI)** or **TypeScript (Hono)**
+   - Service / CLI → **Go**
+   - Frontend → **TypeScript + Vite + React**
+   - ML / data → **Python**
+   Always recommend strict typing (mypy/pyright for Python, `strict`
+   for TS).
 2. Database (Postgres / SQLite / MySQL / Mongo)
 3. Multi-tenancy? (none / shared-DB with `tenant_id` / DB-per-tenant)
 4. Containerization (Docker / none)
@@ -71,11 +78,11 @@ this order (one at a time, with a suggested default):
 21. LGPD / GDPR applicable? (generates retention policy, export, delete)
 22. Audit log (sensitive events in separate log / none)
 
-Persist all answers into `project.config.toml` at the repo root.
+Persist all answers into `.aidev/config/project.config.toml`.
 
 ### 3. Propose the tooling table
 
-Based on `QUALITY.md` ("Reference table by stack" section). For each
+Based on `.aidev/QUALITY.md` ("Reference table by stack" section). For each
 function (SAST, deps, coverage, complexity, modularity, secrets,
 lint, format, types, dead code), present:
 
@@ -123,10 +130,10 @@ Don't trust known values — they may be stale.
 
 Create/update:
 
-1. **`QUALITY.md`** — populated with the real tools and gates. Remove
+1. **`.aidev/QUALITY.md`** — populated with the real tools and gates. Remove
    the `[STACK X]` sections that don't apply.
-2. **`INFRASTRUCTURE.md`** — populated with the dev's NFR answers.
-3. **`project.config.toml`** — declarative configuration that
+2. **`.aidev/INFRASTRUCTURE.md`** — populated with the dev's NFR answers.
+3. **`.aidev/config/project.config.toml`** — declarative configuration that
    crystalizes the answers (drives regeneration later).
 4. **`.github/workflows/quality.yml`** (or GitLab CI / Bitbucket) with
    one job per gate.
@@ -160,14 +167,14 @@ Present:
 - NFRs decided (auth methods, multi-tenancy, etc.)
 - Created/modified files
 - Next steps (run `pre-commit install`, configure CI secrets, fill
-  `GLOSSARY.md`, etc.)
+  `.aidev/GLOSSARY.md`, etc.)
 
 ## Principles
 
 - **Don't impose:** always present default + alternatives. Dev decides.
 - **Latest version:** always fetch before pinning.
 - **Minimum viable:** start with conservative gates. Tighten over time.
-- **Document the "why":** when generating `QUALITY.md`, briefly comment
+- **Document the "why":** when generating `.aidev/QUALITY.md`, briefly comment
   the reason for each choice.
 - **Idempotent:** rerunning `/init-project` should reconcile, not
-  duplicate. Use `project.config.toml` as state.
+  duplicate. Use `.aidev/config/project.config.toml` as state.

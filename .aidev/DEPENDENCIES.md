@@ -113,7 +113,7 @@ the new idiom from day one. Don't write the old syntax just because
 2. List the breaking changes that affect this project (search the
    codebase for old-API usages).
 3. **Create a `feedback_<lib>_v<version>.md` memory** capturing the
-   new idiom (see `memory-templates/feedback_template.md`). The memory
+   new idiom (see `.aidev/memory-templates/feedback_template.md`). The memory
    must include:
    - Old syntax → new syntax mapping (concrete examples)
    - Common pitfalls during migration
@@ -172,7 +172,7 @@ removed in the **same PR**. The `dependency-evaluator` subagent (or
 - Track every dep's license in a generated `LICENSES.md` or via a
   license scanner (`pip-licenses`, `license-checker`, `cargo-deny`).
 - CI fails on incompatible licenses (define allowlist in
-  `project.config.toml`).
+  `.aidev/config/project.config.toml`).
 - Common allowlist for proprietary projects: MIT, BSD-2/3, Apache-2.0,
   ISC, MPL-2.0 (sometimes).
 - Review case-by-case: GPL/AGPL/LGPL, custom EULAs.

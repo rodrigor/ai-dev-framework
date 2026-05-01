@@ -9,6 +9,26 @@ Versioning: [SemVer](https://semver.org/).
 
 ## Unreleased
 
+### changed
+- **Repository layout reorganized.** Framework documents and tooling
+  moved into `.aidev/` to keep the project root clean. Only
+  `CLAUDE.md`, `README.md`, `CHANGELOG.md`, `.gitignore`, and
+  `.claude/` remain at the root. Internal cross-references updated.
+- `CLAUDE.md` slimmed down: it now contains the hard-rule summary
+  with pointers into `.aidev/` for full rationale.
+- `.aidev/scripts/pre_pr_check.py` looks for config at
+  `.aidev/config/pre_pr_check.toml` (with backward-compat fallback
+  to the legacy root location).
+
+### added
+- `INFRASTRUCTURE.md` "Stack rationale" section with a language
+  ranking (token cost × AI maintainability) and per-use-case
+  defaults: backend SaaS → Python (FastAPI) or TypeScript (Hono);
+  service/CLI → Go; frontend → TypeScript + Vite + React.
+- `init-project` skill recommends strict typing
+  (mypy/pyright/`strict`) by default and documents the rationale
+  inline.
+
 ### added
 - `DEPENDENCIES.md`: full policy for adding/updating external deps —
   health checks (last release, maintainers, CVEs, license),

@@ -1,6 +1,8 @@
 # Local config — do not commit
-pre_pr_check.toml
-project.config.toml
+.aidev/config/pre_pr_check.toml
+.aidev/config/project.config.toml
+pre_pr_check.toml             # legacy location
+project.config.toml           # legacy location
 .claude/settings.local.json
 
 # Editors

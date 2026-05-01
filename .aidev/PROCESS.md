@@ -18,7 +18,7 @@ in practice.
    ├─ if a feature: feature flag is mandatory
    └─ if creating a reusable component: catalog it in COMPONENTS.md
 6. Update release notes / CHANGELOG ("Unreleased" section)
-7. Run pre-PR checklist (scripts/pre_pr_check.py)
+7. Run pre-PR checklist (.aidev/scripts/pre_pr_check.py)
 8. Open PR — all scanners green (HIGH/CRITICAL = block)
 ```
 
@@ -57,7 +57,7 @@ Source of truth: `CHANGELOG.md` (or the project's equivalent).
 
 ## Pre-PR checklist
 
-`scripts/pre_pr_check.py` validates automatically. Minimum coverage:
+`.aidev/scripts/pre_pr_check.py` validates automatically. Minimum coverage:
 
 - [ ] Release notes updated (entry in "Unreleased")
 - [ ] `COMPONENTS.md` updated if a reusable helper/service/macro was created
@@ -81,7 +81,7 @@ queue before the next feature in the same file.
 
 Decisions affecting system structure (DB choice, multi-tenancy, caching
 strategy, primary framework, auth model) become an ADR in
-`docs/adr/NNNN-title.md`. Use the `0000-template.md`.
+`.aidev/adr/NNNN-title.md`. Use the `0000-template.md`.
 
 AI memories (`project_*`) are volatile and individual; an ADR is
 versioned and reviewable by the whole team.
@@ -89,7 +89,7 @@ versioned and reviewable by the whole team.
 ## AI-maintained memories
 
 The AI keeps persistent memories to accelerate future sessions. See
-`memory-templates/` for the formats. Types:
+`.aidev/memory-templates/` for the formats. Types:
 
 - **`feedback_*`** — behavior rule the dev corrected/validated.
   E.g., "always rebuild Tailwind before committing templates".

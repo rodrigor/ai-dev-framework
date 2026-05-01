@@ -9,7 +9,7 @@
       "Bash(git branch:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(python scripts/pre_pr_check.py:*)"
+      "Bash(python .aidev/scripts/pre_pr_check.py:*)"
     ]
   },
   "_hooks_note": "Enable the Stop hook below to run the pre-PR checklist at the end of every AI turn. Uncomment after validating locally.",
@@ -20,7 +20,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python scripts/pre_pr_check.py || true"
+            "command": "python .aidev/scripts/pre_pr_check.py || true"
           }
         ]
       }

@@ -22,7 +22,7 @@ If any is missing, ask the dev.
 
 ### 1. Check if equivalent already exists
 
-- Read `COMPONENTS.md` for similar functionality.
+- Read `.aidev/COMPONENTS.md` for similar functionality.
 - Inspect the dependency manifest (`requirements.txt`,
   `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`) for libs in the
   same category.
@@ -50,7 +50,7 @@ Fetch the GitHub repo (find via the registry metadata) and verify:
 - **Last commit on default branch:** ≤ 6 months (warn if older).
 - **Open issues / closed issues ratio:** triage is active.
 - **Maintainer count:** ≥ 2 active contributors in last 12 months.
-- **Security policy file** (`SECURITY.md` in the repo).
+- **Security policy file** (`SECURITY.md` in the candidate's repo).
 - **Tests / CI:** evidence of working test suite.
 - **Repo not archived.** Hard block if archived.
 
@@ -137,7 +137,7 @@ blocking old syntax").
 ## Pinning recommendation
 
 When recommending the pin, follow the project's policy in
-`DEPENDENCIES.md`:
+`.aidev/DEPENDENCIES.md`:
 
 - Application code → exact pin (`==X.Y.Z`).
 - Library code → range pin (`>=X.Y,<X+1`).

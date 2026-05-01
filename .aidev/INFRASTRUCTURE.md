@@ -2,7 +2,7 @@
 
 Catalog of non-functional infrastructure capabilities the framework
 configures. The `/init-project` skill walks through the questions
-below and crystalizes the answers in `project.config.toml`.
+below and crystalizes the answers in `.aidev/config/project.config.toml`.
 
 > **Status:** `[SKELETON — fill in via init-project]`
 > After init, replace the catalog with a section per chosen capability,
@@ -40,13 +40,72 @@ must be precompiled and committed (see `pre_pr_check.py` sync rule).
 ## 2. Stack
 
 **Question:** Primary language(s) and web framework?
-**Defaults:**
-- Backend Python: FastAPI
-- Backend Node/TS: Express or Hono
-- Backend Go: net/http or chi
-- Frontend: React + Vite + TypeScript
 
-**Options:** open — choose what fits the team.
+### Rationale: language choice for AI-driven development
+
+Two axes determine cost: **token cost** (how many tokens equivalent
+code consumes) and **AI maintainability** (training-data depth, idiom
+uniformity, type safety). They often pull against each other — a
+verbose typed language costs more tokens to read but lets the agent
+make safer changes.
+
+**Top tier (best balance):**
+
+| Language | Token cost (Python = 1.0×) | Training corpus | Idiom uniformity | Notes |
+|---|---|---|---|---|
+| **Python** + strict types (mypy/pyright) + Pydantic | 1.0× | huge | medium | Cheapest tokens, largest corpus. Strict typing closes the dynamic-typing risk. |
+| **TypeScript** strict mode | ~1.3× | huge | medium-high | Strong types catch most refactor breakage. ~25% token premium pays off in fewer iterations. |
+| **Go** | ~1.45× | high | **very high** | Token premium offset by extreme idiom uniformity — agent decisions are predictable. |
+
+**Honorable mention:**
+- **Kotlin** — modern JVM, less verbose than Java, less training data than top 3.
+- **Rust** — compiler eliminates whole bug classes, but lifetime/borrow puzzles cost agent iterations. Use only when performance/safety justify it.
+
+**Avoid for AI-driven maintenance unless forced:**
+- **Plain JavaScript** — every refactor is a coin flip without types.
+- **Java** without Kotlin — token-expensive, ceremonial.
+- **Ruby + Rails** — auto-loading, monkey-patching, metaprogramming everywhere → magic at the wrong layer for an agent.
+- **C++** — token-expensive, footguns, training corpus has too much obsolete style.
+- **Clojure / Elixir / OCaml** — fine languages, but small training corpus = more cautious sessions, more iterations.
+
+### Defaults by use case
+
+| Use case | First choice | Second |
+|---|---|---|
+| Backend SaaS | Python (FastAPI) **or** TypeScript (Hono/Express) | Go (chi) |
+| CLI tools | Go | Python |
+| Service-oriented backend | Go | Rust |
+| Frontend | TypeScript + Vite + React | Svelte |
+| Data / ML pipelines | Python | — |
+| Performance-critical service | Go | Rust |
+| Mobile (Android) | Kotlin | — |
+| Mobile (iOS) | Swift | — |
+
+### Two non-obvious points
+
+1. **Token economy at the session level matters more than at the file
+   level.** Type-rich code costs more tokens to read but produces
+   fewer wrong refactors. Total tokens consumed across a long-running
+   project are lower with strict TypeScript than with plain
+   JavaScript, even though TS files look longer.
+
+2. **Idiom uniformity beats raw token economy.** Go is more verbose
+   than Python, but every Go codebase looks the same — agent doesn't
+   re-orient per project. Python codebases vary enormously
+   (Django/FastAPI/Flask). `CODE_STYLE.md`'s "one canonical way per
+   common operation" is meant to give Python codebases Go-like
+   uniformity.
+
+### Other choices (when applicable)
+
+- Backend Python: **FastAPI** (recommended), Litestar, Starlette.
+- Backend TS: **Hono** (modern, fast), Express (mature), Fastify.
+- Backend Go: **chi** or **echo** (or `net/http` for ultra-minimal).
+- Frontend: **React + Vite** or **Svelte/SvelteKit**.
+
+If the team has strong reasons (existing codebase, hiring pool,
+performance budget) to choose differently, respect it — but document
+the trade-off in an ADR.
 
 **Generated:** project skeleton, manifest with pinned versions
 (latest stable, fetched at init), entry-point file, healthcheck route.

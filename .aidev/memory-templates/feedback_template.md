@@ -41,4 +41,4 @@ the classes in templates.
 
 ## How to verify
 
-`scripts/pre_pr_check.py` validates automatically.
+`.aidev/scripts/pre_pr_check.py` validates automatically.

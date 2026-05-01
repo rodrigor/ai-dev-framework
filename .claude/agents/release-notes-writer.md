@@ -22,7 +22,7 @@ concise, factual, and follow the project's existing tone.
    - `removed` — feature deletion
    - `security` — security patch (CVE remediation, auth fix, etc.)
 4. If the project has dual tracks (user vs admin/infra), check
-   `INFRASTRUCTURE.md` and place the entry accordingly.
+   `.aidev/INFRASTRUCTURE.md` and place the entry accordingly.
 5. Write 1–3 short bullets under the **Unreleased** section. Focus on
    the **why** for the user, not the **what** of the diff.
 

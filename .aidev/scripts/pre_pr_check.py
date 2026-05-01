@@ -3,14 +3,14 @@
 Pre-PR checklist — deterministic validations that must pass before
 opening a Pull Request.
 
-Parametrized by `pre_pr_check.toml` at the project root. Without the
+Parametrized by `.aidev/config/pre_pr_check.toml`. Without the
 file, only universal checks run.
 
 Usage:
-    python scripts/pre_pr_check.py              # current branch vs main
-    python scripts/pre_pr_check.py --base develop
-    python scripts/pre_pr_check.py --staged     # only staged changes
-    python scripts/pre_pr_check.py --strict     # warnings become blocks
+    python .aidev/scripts/pre_pr_check.py              # current branch vs main
+    python .aidev/scripts/pre_pr_check.py --base develop
+    python .aidev/scripts/pre_pr_check.py --staged     # only staged changes
+    python .aidev/scripts/pre_pr_check.py --strict     # warnings become blocks
 
 Exit codes:
     0  — all OK
@@ -32,8 +32,16 @@ except ModuleNotFoundError:  # pragma: no cover
     import tomli as tomllib  # type: ignore
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-CONFIG_PATH = REPO_ROOT / "pre_pr_check.toml"
+# Script lives at .aidev/scripts/pre_pr_check.py — repo root is two levels up.
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+# Config lookup order (first match wins):
+#   1. .aidev/config/pre_pr_check.toml   (recommended location)
+#   2. pre_pr_check.toml at repo root    (legacy)
+_CONFIG_CANDIDATES = (
+    REPO_ROOT / ".aidev" / "config" / "pre_pr_check.toml",
+    REPO_ROOT / "pre_pr_check.toml",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -105,10 +113,11 @@ def matches_any(path: Path, patterns: list[str]) -> bool:
 
 
 def load_config() -> dict:
-    if not CONFIG_PATH.exists():
-        return {}
-    with CONFIG_PATH.open("rb") as fh:
-        return tomllib.load(fh)
+    for path in _CONFIG_CANDIDATES:
+        if path.exists():
+            with path.open("rb") as fh:
+                return tomllib.load(fh)
+    return {}
 
 
 # ---------------------------------------------------------------------------
