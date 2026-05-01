@@ -1,0 +1,41 @@
+# Configuração do scripts/pre_pr_check.py.
+# Copie para `pre_pr_check.toml` na raiz do projeto e ajuste.
+
+# Branch base para comparar (geralmente main ou develop)
+base = "main"
+
+[release_notes]
+# Arquivos onde release notes vivem
+paths = ["CHANGELOG.md"]
+# Se algum arquivo nestes globs muda, exige update em release notes
+code_globs = ["src/**", "app/**", "lib/**"]
+
+[components]
+# Se um arquivo novo é adicionado nestes globs, exige update em COMPONENTS.md
+helper_globs = ["**/utils/**", "**/helpers/**", "**/services/**", "**/lib/**"]
+
+[feature_flag]
+# Globs de rotas/controllers
+route_globs = ["**/routers/**", "**/routes/**", "**/controllers/**"]
+# Marcador no código que indica uso de feature flag
+marker = "is_enabled"
+
+# Sincronizações custom — múltiplas regras possíveis
+# Quando QUALQUER arquivo de `when_any_changes` muda, exige que TODOS de
+# `require_all_change` também mudem na mesma branch.
+
+# Exemplo (do projeto okrs4all):
+# [[sync]]
+# name = "okr-draft-payload"
+# when_any_changes = [
+#   "app/templates/okr_form.html",
+# ]
+# require_all_change = [
+#   "app/models.py",
+#   "app/routers/drafts.py",
+# ]
+
+# [[sync]]
+# name = "tailwind-rebuild"
+# when_any_changes = ["app/templates/**/*.html"]
+# require_all_change = ["app/static/css/tailwind.css"]

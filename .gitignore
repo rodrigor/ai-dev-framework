@@ -1,0 +1,20 @@
+# Local config — não commitar
+pre_pr_check.toml
+.claude/settings.local.json
+
+# Editores
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Python (caso o framework cresça com utilitários Python)
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node (idem)
+node_modules/
