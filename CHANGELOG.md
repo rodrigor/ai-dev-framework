@@ -9,6 +9,23 @@ Versioning: [SemVer](https://semver.org/).
 
 ## Unreleased
 
+### added
+- `.aidev/scripts/init_project.py` — executable bootstrap script.
+  Detects stack from manifests, runs interactive Q&A (with
+  `--non-interactive` / `--dry-run` / `--reconfigure` /
+  `--skip-versions` flags), looks up latest stable versions on
+  PyPI/npm, and generates `.aidev/config/project.config.toml`,
+  `.github/workflows/quality.yml` (per stack), and
+  `.pre-commit-config.yaml`. Stdlib-only (urllib + tomllib).
+- `init-project` skill rewritten to delegate mechanical work to the
+  script and focus on prose population (QUALITY.md / INFRASTRUCTURE.md
+  decisions sections with rationale).
+
+### changed
+- Repo marked as **GitHub Template**. Consumers can now use
+  `gh repo create --template rodrigor/ai-dev-framework` to scaffold
+  new projects.
+
 ### changed
 - **Repository layout reorganized.** Framework documents and tooling
   moved into `.aidev/` to keep the project root clean. Only
